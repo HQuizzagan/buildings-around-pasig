@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaflet Map with Python</title>
+
+    <!-- Include Leaflet CSS and JavaScript -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <!-- Use OSMBuildings -->
+    <link href="https://cdn.osmbuildings.org/4.1.1/OSMBuildings.css" rel="stylesheet">
+    <script src="https://cdn.osmbuildings.org/4.1.1/OSMBuildings.js"></script>
+
+    <style>
+
+        #map {
+            height: 100vh;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+
+    <script>
+        const map_center = [14.568070456746469, 121.04789236278457];
+
+        // Initialize the map
+        var map = L.map('map').setView(map_center, 13);
+
+        var osmb = new OSMBuildings({
+            container: 'map',
+            position: { latitude: map_center[0], longitude: map_center[1] },
+            zoom: 16,
+            minZoom: 15,
+            maxZoom: 20,
+            attribution: '© Data <a href="https://openstreetmap.org/copyright/">OpenStreetMap</a> © Map <a href="https://mapbox.com/">Mapbox</a> © 3D <a href="https://osmbuildings.org/copyright/">OSM Buildings</a>'
+        })
+
+        // osmb.addMapTiles('https://{s}.tiles.mapbox.com/v3/[YOUR_MAPBOX_KEY]/{z}/{x}/{y}.png');
+        osmb.addMapTiles('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}');
+        osmb.addGeoJSONTiles('https://{s}.data.osmbuildings.org/0.2/anonymous/tile/{z}/{x}/{y}.json');
+        osmb.setRotation(-100);
+        osmb.setTilt(45);
+
+        // Get the map rotation and tilt
+        osmb.on('change', function() {
+            var rotation = osmb.getRotation();
+            var tilt = osmb.getTilt();
+            console.log('rotation: ' + rotation + ', tilt: ' + tilt);
+        });
+
+        // Add more base layers to choose from
+        var baseLayers = {
+            "CartoDB Positron": L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }),
+            "OpenStreetMap": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors'
+            }),
+            "Esri World Imagery": L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+                attribution: '© Esri'
+            }),
+        };
+
+        // Add the base layers to the map
+        // L.control.layers(baseLayers).addTo(map);
+    </script>
+</body>
+</html>
